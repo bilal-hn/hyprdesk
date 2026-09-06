@@ -1,0 +1,9 @@
+# Backups and temporary files
+*.bak
+*.tmp
+*~
+.DS_Store
+
+# User-specific secrets or tokens (if any in the future)
+*.secret
+.env
