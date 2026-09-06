@@ -1,0 +1,125 @@
+configuration {
+    modi:                       "drun,run,window";
+    show-icons:                 true;
+    display-drun:               "";
+    display-run:                "";
+    display-window:             "";
+    drun-display-format:        "{name}";
+    font:                       "MesloLGS Nerd Font 10";
+}
+
+@theme "/dev/null"
+
+* {
+    bg-input:                   #18182588;   /* Subtle translucent search bar */
+    fg:                         #cdd6f4;
+    fg-dim:                     #a6adc8;
+    accent:                     #89b4fa;
+    border-outline:             #89b4facc;   /* Outline color on selection/hover */
+    border-subtle:              #585b7066;
+
+    background-color:           transparent;
+    text-color:                 @fg;
+}
+
+window {
+    transparency:               "real";
+    location:                   center;
+    anchor:                     center;
+    fullscreen:                 false;
+    width:                      780px;
+    height:                     520px;
+    border:                     1.5px;
+    border-color:               @border-subtle;
+    border-radius:              24px;
+    background-color:           #11111b88;
+    padding:                    0px;
+    margin:                     0px;
+}
+
+mainbox {
+    padding:                    24px 28px;
+    children:                   [ "inputbar", "listview" ];
+    spacing:                    20px;
+    background-color:           transparent;
+}
+
+/* Centered Pill Search Bar with Subtle Outline */
+inputbar {
+    horizontal-align:           0.5;
+    margin:                     0px 60px;
+    padding:                    8px 20px;
+    background-color:           @bg-input;
+    border:                     1.5px;
+    border-color:               @border-subtle;
+    border-radius:              50px;
+    children:                   [ "prompt", "entry" ];
+    spacing:                    12px;
+}
+
+prompt {
+    vertical-align:             0.5;
+    horizontal-align:           0.5;
+    text-color:                 @fg-dim;
+    font:                       "MesloLGS Nerd Font 12";
+}
+
+entry {
+    vertical-align:             0.5;
+    text-color:                 @fg;
+    placeholder:                "Search applications...";
+    placeholder-color:          @fg-dim;
+    cursor:                     text;
+}
+
+/* 4-Column Grid with Transparent Background */
+listview {
+    columns:                    4;
+    lines:                      3;
+    cycle:                      true;
+    dynamic:                    true;
+    scrollbar:                  false;
+    layout:                     vertical;
+    reverse:                    false;
+    fixed-height:               true;
+    fixed-columns:              true;
+    spacing:                    14px;
+    background-color:           transparent;
+}
+
+element {
+    orientation:                vertical;
+    padding:                    16px 8px 12px 8px;
+    border-radius:              16px;
+    border:                     2px;
+    border-color:               transparent;
+    background-color:           transparent;
+    spacing:                    8px;
+    cursor:                     pointer;
+}
+
+element-icon {
+    size:                       48px;
+    horizontal-align:           0.5;
+    cursor:                     inherit;
+    background-color:           transparent;
+}
+
+element-text {
+    horizontal-align:           0.5;
+    vertical-align:             0.5;
+    text-color:                 @fg;
+    cursor:                     inherit;
+    background-color:           transparent;
+}
+
+/* Outline-only hover/selection effect */
+element selected {
+    background-color:           transparent;
+    border:                     2px;
+    border-color:               @border-outline;
+}
+
+element selected element-text {
+    text-color:                 @accent;
+}
