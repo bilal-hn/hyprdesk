@@ -112,7 +112,7 @@ hl.bind(mainMod .. " + Print",     hl.dsp.exec_cmd(noctCall .. "screenshot-fulls
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd([[sh -c 'GEOM=$(slurp); [ -z "$GEOM" ] && exit 0; grim -g "$GEOM" - | wl-copy && notify-send "Screenshot" "Cropped region copied to clipboard" -i camera-photo']]))
 
 -- Theming and Wallpaper
-hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd(noctCall .. "panel-toggle wallpaper"))
+hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("/home/bihhlal/Projects/Personal/hyprdesk/scripts/wallpaper-picker.sh"))
 
 -- Clipboard
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(noctCall .. "panel-toggle clipboard"))
