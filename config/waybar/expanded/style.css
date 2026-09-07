@@ -1,0 +1,122 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "MesloLGS Nerd Font", "MesloLGL Nerd Font", sans-serif;
+    font-size: 13px;
+    min-height: 0;
+}
+
+window#waybar {
+    background: transparent;
+}
+
+/* Three Island Containers */
+.modules-left,
+.modules-center,
+.modules-right {
+    background: rgba(18, 20, 26, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    padding: 3px 12px;
+    margin: 0 4px;
+}
+
+/* Left: Distro & Window Title */
+#custom-distro {
+    color: #e7b9d5;
+    font-size: 15px;
+    padding-right: 8px;
+}
+
+#window {
+    color: #dee4e0;
+    font-weight: 600;
+}
+
+/* Center: App Launcher Dock */
+#custom-term,
+#custom-nightlight,
+#custom-files,
+#custom-browser,
+#custom-media {
+    color: #b1ccc4;
+    font-size: 14px;
+    padding: 0 10px;
+    transition: all 0.2s ease;
+}
+
+#custom-term:hover,
+#custom-nightlight:hover,
+#custom-files:hover,
+#custom-browser:hover,
+#custom-media:hover {
+    color: #84d6c2;
+    background: rgba(132, 214, 194, 0.15);
+    border-radius: 8px;
+}
+
+/* Right: Telemetry & Controls */
+#custom-dnd,
+#tray,
+#pulseaudio,
+#battery,
+#cpu,
+#clock,
+#custom-collapse,
+#custom-power {
+    color: #dee4e0;
+    padding: 0 6px;
+    transition: all 0.2s ease;
+}
+
+#pulseaudio:hover,
+#battery:hover,
+#cpu:hover,
+#clock:hover {
+    color: #ffffff;
+}
+
+#pulseaudio.muted {
+    color: #89938f;
+}
+
+#battery.charging {
+    color: #84d6c2;
+}
+
+#battery.warning:not(.charging) {
+    color: #f9e2af;
+}
+
+#battery.critical:not(.charging) {
+    color: #ffb4ab;
+}
+
+#cpu {
+    color: #aacbe4;
+}
+
+#clock {
+    font-weight: 700;
+}
+
+#custom-collapse {
+    color: #84d6c2;
+    font-size: 14px;
+    padding: 0 8px;
+}
+
+#custom-collapse:hover {
+    color: #ffffff;
+}
+
+#custom-power {
+    color: #ffb4ab;
+    font-size: 14px;
+    padding-left: 8px;
+}
+
+#custom-power:hover {
+    color: #ff5449;
+}

@@ -1,0 +1,119 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 38,
+    "margin-top": 6,
+    "margin-left": 12,
+    "margin-right": 12,
+    "spacing": 8,
+    "modules-left": [
+        "custom/distro",
+        "hyprland/window"
+    ],
+    "modules-center": [
+        "custom/term",
+        "custom/nightlight",
+        "custom/files",
+        "custom/browser",
+        "custom/media"
+    ],
+    "modules-right": [
+        "custom/dnd",
+        "tray",
+        "pulseaudio",
+        "battery",
+        "cpu",
+        "clock",
+        "custom/collapse",
+        "custom/power"
+    ],
+    "custom/distro": {
+        "format": "󰈸",
+        "tooltip": "hyprdesk system",
+        "on-click": "pkill -x rofi || rofi -show drun"
+    },
+    "hyprland/window": {
+        "format": "{}",
+        "max-length": 35,
+        "rewrite": {
+            "": "Empty",
+            "^$": "Empty"
+        },
+        "separate-outputs": true
+    },
+    "custom/term": {
+        "format": "",
+        "tooltip": "Launch Kitty Terminal",
+        "on-click": "kitty &"
+    },
+    "custom/nightlight": {
+        "format": "",
+        "tooltip": "Toggle Night Light",
+        "on-click": "noctalia msg nightlight-force-toggle"
+    },
+    "custom/files": {
+        "format": "",
+        "tooltip": "Launch File Manager",
+        "on-click": "dolphin &"
+    },
+    "custom/browser": {
+        "format": "",
+        "tooltip": "Launch Web Browser",
+        "on-click": "firefox &"
+    },
+    "custom/media": {
+        "format": "",
+        "tooltip": "Media Play / Pause",
+        "on-click": "playerctl play-pause"
+    },
+    "custom/dnd": {
+        "format": "󰂚",
+        "tooltip": "Toggle Notifications / DND",
+        "on-click": "noctalia msg notification-dnd-toggle"
+    },
+    "tray": {
+        "icon-size": 15,
+        "spacing": 10
+    },
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "󰝟 0%",
+        "format-icons": {
+            "default": ["󰕿", "󰖀", "󰕾"]
+        },
+        "tooltip-format": "{desc}",
+        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "on-click-right": "pavucontrol",
+        "scroll-step": 5
+    },
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": "󱐋 {capacity}%",
+        "format-plugged": "󰚥 {capacity}%",
+        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+        "tooltip-format": "{capacity}% ({time})"
+    },
+    "cpu": {
+        "format": "󰍛 {usage}%",
+        "interval": 2
+    },
+    "clock": {
+        "format": "{:%I:%M %p}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "on-click": "/home/bihhlal/Projects/Personal/hyprdesk/scripts/waybar-controller.sh toggle-mode"
+    },
+    "custom/collapse": {
+        "format": "󰁓",
+        "tooltip": "Collapse to Dynamic Island",
+        "on-click": "/home/bihhlal/Projects/Personal/hyprdesk/scripts/waybar-controller.sh toggle-mode"
+    },
+    "custom/power": {
+        "format": "",
+        "tooltip": "Session / Power Menu",
+        "on-click": "noctalia msg panel-toggle session"
+    }
+}

@@ -1,0 +1,119 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "MesloLGS Nerd Font", "MesloLGL Nerd Font", sans-serif;
+    font-size: 13px;
+    min-height: 0;
+}
+
+window#waybar {
+    background: transparent;
+}
+
+/* Island container pill */
+.modules-left,
+.modules-center,
+.modules-right {
+    background: rgba(18, 20, 26, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    padding: 2px 6px;
+}
+
+.modules-left {
+    border-radius: 9999px 0 0 9999px;
+    border-right: none;
+    padding-left: 12px;
+}
+
+.modules-center {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+}
+
+.modules-right {
+    border-radius: 0 9999px 9999px 0;
+    border-left: none;
+    padding-right: 12px;
+}
+
+/* Clock */
+#clock {
+    color: #e4e1e9;
+    font-weight: 700;
+    padding-right: 8px;
+}
+
+/* Workspaces */
+#workspaces {
+    padding: 0 4px;
+}
+
+#workspaces button {
+    color: #797985;
+    background: transparent;
+    padding: 0 5px;
+    margin: 2px 1px;
+    border-radius: 9999px;
+    min-width: 18px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+#workspaces button:hover {
+    color: #e4e1e9;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+#workspaces button.active {
+    background: #e7b9d5;
+    color: #131318;
+    font-weight: 800;
+    padding: 0 9px;
+    border-radius: 9999px;
+}
+
+#workspaces button.urgent {
+    background: #ffb4ab;
+    color: #131318;
+}
+
+/* Right Status Modules */
+#pulseaudio,
+#network,
+#battery,
+#custom-expand {
+    color: #c7c5d0;
+    padding: 0 5px;
+    transition: all 0.2s ease;
+}
+
+#pulseaudio:hover,
+#network:hover,
+#battery:hover,
+#custom-expand:hover {
+    color: #ffffff;
+}
+
+#pulseaudio.muted {
+    color: #91909a;
+}
+
+#battery.charging {
+    color: #84d6c2;
+}
+
+#battery.warning:not(.charging) {
+    color: #f9e2af;
+}
+
+#battery.critical:not(.charging) {
+    color: #ffb4ab;
+}
+
+#custom-expand {
+    color: #84d6c2;
+    font-size: 14px;
+    padding-left: 4px;
+}
