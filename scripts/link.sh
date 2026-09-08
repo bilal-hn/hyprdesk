@@ -32,4 +32,11 @@ for item in "$CONFIG_DIR"/*; do
     ln -s "$item" "$target"
 done
 
+# Build custom helpers if needed
+if [ -f "$REPO_DIR/scripts/bar-morph.c" ]; then
+    mkdir -p "$HOME/.local/bin"
+    echo "==> hyprdesk: Compiling bar-morph animator..."
+    gcc -O3 "$REPO_DIR/scripts/bar-morph.c" -o "$HOME/.local/bin/bar-morph" $(pkg-config --cflags --libs gtk+-3.0 gtk-layer-shell-0) -lm 2>/dev/null || true
+fi
+
 echo "==> Done! All available configs linked."

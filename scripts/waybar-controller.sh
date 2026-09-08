@@ -43,11 +43,22 @@ start_waybar() {
 toggle_mode() {
     local current="$(get_current_mode)"
     local next="compact"
+    local anim="collapse"
     if [ "$current" = "compact" ]; then
         next="expanded"
+        anim="expand"
     else
         next="compact"
+        anim="collapse"
     fi
+
+    # Trigger smooth geometric morphing animation overlay
+    if command -v bar-morph >/dev/null 2>&1; then
+        bar-morph "$anim" &
+    elif [ -x "$HOME/.local/bin/bar-morph" ]; then
+        "$HOME/.local/bin/bar-morph" "$anim" &
+    fi
+
     start_waybar "$next"
 }
 
