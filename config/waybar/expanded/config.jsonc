@@ -21,9 +21,8 @@
     "modules-right": [
         "custom/dnd",
         "tray",
-        "pulseaudio",
+        "memory",
         "battery",
-        "cpu",
         "clock",
         "custom/collapse",
         "custom/power"
@@ -76,16 +75,11 @@
         "icon-size": 15,
         "spacing": 10
     },
-    "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-muted": "󰝟 0%",
-        "format-icons": {
-            "default": ["󰕿", "󰖀", "󰕾"]
-        },
-        "tooltip-format": "{desc}",
-        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
-        "on-click-right": "pavucontrol",
-        "scroll-step": 5
+    "memory": {
+        "format": "󰘚 {percentage}%",
+        "tooltip-format": "RAM: {used:0.1f}GB / {total:0.1f}GB ({percentage}%)\nClick to open btop",
+        "on-click": "kitty -e btop &",
+        "interval": 2
     },
     "battery": {
         "states": {
@@ -96,11 +90,8 @@
         "format-charging": "󱐋 {capacity}%",
         "format-plugged": "󰚥 {capacity}%",
         "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
-        "tooltip-format": "{capacity}% ({time})"
-    },
-    "cpu": {
-        "format": "󰍛 {usage}%",
-        "interval": 2
+        "tooltip-format": "{capacity}% ({time})",
+        "on-click": "noctalia msg panel-toggle control-center power"
     },
     "clock": {
         "format": "{:%I:%M %p}",

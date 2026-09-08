@@ -25,5 +25,29 @@ SELECTED="$("$HELLPAPER" "$WALLPAPER_DIR")"
 # Smoothly animate the new wallpaper onto the desktop
 awww img "$SELECTED" --transition-type wipe --transition-fps 60
 
+# Extract dynamic color palette from wallpaper and sync with Waybar
+if command -v noctalia >/dev/null 2>&1; then
+    PALETTE="$(noctalia theme "$SELECTED" --dark 2>/dev/null)"
+    PRIMARY="$(echo "$PALETTE" | grep '"primary":' | head -1 | cut -d'"' -f4)"
+    if [ -n "$PRIMARY" ]; then
+        HEX="${PRIMARY#\#}"
+        R=$((16#${HEX:0:2}))
+        G=$((16#${HEX:2:2}))
+        B=$((16#${HEX:4:2}))
+        mkdir -p "$HOME/.cache/hyprdesk"
+        echo "$R, $G, $B" > "$HOME/.cache/hyprdesk/accent_color"
+        cat <<EOF > "$HOME/Projects/Personal/hyprdesk/config/waybar/colors.css"
+/* Auto-generated palette from wallpaper */
+@define-color accent $PRIMARY;
+@define-color bg-glass rgba(14, 21, 19, 0.88);
+@define-color fg #dee4e0;
+@define-color subtle #89938f;
+@define-color border-glass rgba($R, $G, $B, 0.20);
+EOF
+        # Reload Waybar styles
+        pkill -SIGUSR2 -x waybar 2>/dev/null || true
+    fi
+fi
+
 # Desktop notification
 notify-send "Wallpaper Changed" "$(basename "$SELECTED")" -i "$SELECTED"

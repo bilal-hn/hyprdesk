@@ -1,3 +1,5 @@
+@import "../colors.css";
+
 * {
     border: none;
     border-radius: 0;
@@ -14,8 +16,8 @@ window#waybar {
 .modules-left,
 .modules-center,
 .modules-right {
-    background: rgba(18, 20, 26, 0.88);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: @bg-glass;
+    border: 1px solid @border-glass;
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
     padding: 3px 12px;
@@ -24,13 +26,13 @@ window#waybar {
 
 /* Left: Distro & Window Title */
 #custom-distro {
-    color: #e7b9d5;
+    color: @accent;
     font-size: 15px;
     padding-right: 8px;
 }
 
 #window {
-    color: #dee4e0;
+    color: @fg;
     font-weight: 600;
 }
 
@@ -40,7 +42,7 @@ window#waybar {
 #custom-files,
 #custom-browser,
 #custom-media {
-    color: #b1ccc4;
+    color: @subtle;
     font-size: 14px;
     padding: 0 10px;
     transition: all 0.2s ease;
@@ -51,7 +53,7 @@ window#waybar {
 #custom-files:hover,
 #custom-browser:hover,
 #custom-media:hover {
-    color: #84d6c2;
+    color: @accent;
     background: rgba(132, 214, 194, 0.15);
     border-radius: 8px;
 }
@@ -59,42 +61,38 @@ window#waybar {
 /* Right: Telemetry & Controls */
 #custom-dnd,
 #tray,
-#pulseaudio,
+#memory,
 #battery,
-#cpu,
 #clock,
 #custom-collapse,
 #custom-power {
-    color: #dee4e0;
+    color: @fg;
     padding: 0 6px;
     transition: all 0.2s ease;
 }
 
-#pulseaudio:hover,
+#custom-dnd:hover,
+#memory:hover,
 #battery:hover,
-#cpu:hover,
 #clock:hover {
-    color: #ffffff;
+    color: @accent;
 }
 
-#pulseaudio.muted {
-    color: #89938f;
+#memory {
+    color: @accent;
+    font-weight: 600;
 }
 
 #battery.charging {
-    color: #84d6c2;
+    color: @accent;
 }
 
 #battery.warning:not(.charging) {
-    color: #f9e2af;
+    color: @accent;
 }
 
 #battery.critical:not(.charging) {
-    color: #ffb4ab;
-}
-
-#cpu {
-    color: #aacbe4;
+    color: @accent;
 }
 
 #clock {
@@ -102,7 +100,7 @@ window#waybar {
 }
 
 #custom-collapse {
-    color: #84d6c2;
+    color: @accent;
     font-size: 14px;
     padding: 0 8px;
 }
@@ -112,11 +110,11 @@ window#waybar {
 }
 
 #custom-power {
-    color: #ffb4ab;
+    color: @accent;
     font-size: 14px;
     padding-left: 8px;
 }
 
 #custom-power:hover {
-    color: #ff5449;
+    color: #ffffff;
 }

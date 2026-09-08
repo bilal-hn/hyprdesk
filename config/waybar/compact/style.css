@@ -1,3 +1,5 @@
+@import "../colors.css";
+
 * {
     border: none;
     border-radius: 0;
@@ -12,8 +14,8 @@ window#waybar {
 
 /* Single unified Dynamic Island pill */
 .modules-center {
-    background: rgba(18, 20, 26, 0.88);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: @bg-glass;
+    border: 1px solid @border-glass;
     border-radius: 9999px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
     padding: 3px 14px;
@@ -22,7 +24,7 @@ window#waybar {
 
 /* Clock */
 #clock {
-    color: #dee4e0;
+    color: @fg;
     font-weight: 700;
     padding-right: 10px;
     margin-right: 2px;
@@ -54,18 +56,18 @@ window#waybar {
 }
 
 #workspaces button.active {
-    color: #e7b9d5;
+    color: @accent;
     font-size: 11px;
     background: transparent;
 }
 
 #workspaces button.urgent {
-    color: #ffb4ab;
+    color: @accent;
 }
 
 /* Sound, Wi-Fi & Battery with clear spacing */
 #pulseaudio {
-    color: #dee4e0;
+    color: @fg;
     font-size: 14px;
     padding: 0 4px;
     margin: 0 6px 0 10px;
@@ -73,15 +75,15 @@ window#waybar {
 }
 
 #pulseaudio:hover {
-    color: #84d6c2;
+    color: @accent;
 }
 
 #pulseaudio.muted {
-    color: #797985;
+    color: @subtle;
 }
 
 #network {
-    color: #dee4e0;
+    color: @fg;
     font-size: 14px;
     padding: 0 4px;
     margin: 0 6px;
@@ -89,17 +91,17 @@ window#waybar {
 }
 
 #network:hover {
-    color: #84d6c2;
+    color: @accent;
 }
 
 #network.disconnected {
-    color: #ffb4ab;
+    color: @subtle;
 }
 
 /* Battery container pill showing actual percentage */
 #battery {
     background: rgba(255, 255, 255, 0.08);
-    color: #dee4e0;
+    color: @fg;
     border-radius: 9999px;
     font-size: 12px;
     font-weight: 600;
@@ -114,23 +116,23 @@ window#waybar {
 }
 
 #battery.charging {
-    color: #84d6c2;
+    color: @accent;
     background: rgba(132, 214, 194, 0.12);
 }
 
 #battery.warning:not(.charging) {
-    color: #f9e2af;
-    background: rgba(249, 226, 175, 0.12);
+    color: @accent;
+    background: rgba(132, 214, 194, 0.10);
 }
 
 #battery.critical:not(.charging) {
-    color: #ffb4ab;
-    background: rgba(255, 180, 171, 0.18);
+    color: @accent;
+    background: rgba(132, 214, 194, 0.18);
 }
 
 /* Expand toggle arrow */
 #custom-expand {
-    color: #84d6c2;
+    color: @accent;
     font-size: 13px;
     padding: 0 2px 0 6px;
     margin-left: 2px;

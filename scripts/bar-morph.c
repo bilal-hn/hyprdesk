@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <sys/time.h>
 #include <string.h>
+#include <stdlib.h>
 
 typedef enum {
     ANIM_EXPAND = 0,
@@ -13,7 +14,7 @@ typedef enum {
 
 static AnimMode g_mode = ANIM_EXPAND;
 static double g_start_time = 0.0;
-static const double DURATION = 0.72; // 720ms total — slow and visible
+static const double DURATION = 0.70; // 700ms total smooth animation
 
 static int g_screen_w = 1280;
 
@@ -57,8 +58,8 @@ static double ease_out_expo(double x) {
     return x >= 1.0 ? 1.0 : 1.0 - pow(2.0, -10.0 * x);
 }
 
-static double ease_in_expo(double x) {
-    return x <= 0.0 ? 0.0 : pow(2.0, 10.0 * x - 10.0);
+static double ease_in_quad(double x) {
+    return x * x;
 }
 
 static double lerp(double a, double b, double t) {
@@ -77,11 +78,27 @@ static void draw_rounded_rect(cairo_t *cr, double x, double y, double w, double 
     cairo_close_path(cr);
 }
 
-/* Colors */
-static const double BG_R = 18.0/255.0, BG_G = 20.0/255.0, BG_B = 26.0/255.0, BG_A = 0.92;
-static const double GLOW_R = 132.0/255.0, GLOW_G = 214.0/255.0, GLOW_B = 194.0/255.0; /* #84d6c2 */
-static const double PINK_R = 231.0/255.0, PINK_G = 185.0/255.0, PINK_B = 213.0/255.0; /* #e7b9d5 */
-static const double BORDER_A = 0.12;
+/* Colors - Unified wallpaper palette */
+static const double BG_R = 14.0/255.0, BG_G = 21.0/255.0, BG_B = 19.0/255.0, BG_A = 0.90;
+static double GLOW_R = 132.0/255.0, GLOW_G = 214.0/255.0, GLOW_B = 194.0/255.0; /* #84d6c2 default */
+static const double BORDER_A = 0.18;
+
+static void load_accent_color(void) {
+    char path[1024];
+    const char *home = getenv("HOME");
+    if (!home) return;
+    snprintf(path, sizeof(path), "%s/.cache/hyprdesk/accent_color", home);
+    FILE *f = fopen(path, "r");
+    if (f) {
+        int r, g, b;
+        if (fscanf(f, "%d, %d, %d", &r, &g, &b) == 3) {
+            GLOW_R = (double)r / 255.0;
+            GLOW_G = (double)g / 255.0;
+            GLOW_B = (double)b / 255.0;
+        }
+        fclose(f);
+    }
+}
 
 /* Draw a single pill with given color, position, size */
 static void draw_pill(cairo_t *cr, double x, double y, double w, double h, double r,
@@ -91,7 +108,7 @@ static void draw_pill(cairo_t *cr, double x, double y, double w, double h, doubl
     cairo_fill(cr);
     if (border_alpha > 0.005) {
         draw_rounded_rect(cr, x, y, w, h, r);
-        cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, border_alpha);
+        cairo_set_source_rgba(cr, GLOW_R, GLOW_G, GLOW_B, border_alpha);
         cairo_set_line_width(cr, 1.0);
         cairo_stroke(cr);
     }
@@ -116,7 +133,6 @@ static gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
         if (global_alpha < 0.0) global_alpha = 0.0;
     }
 
-    /* Common center line Y for the thin-line intermediate state */
     double line_center_y = compact_y + compact_h / 2.0;
 
     double bars[3][5] = {
@@ -125,9 +141,8 @@ static gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
         { right_x, right_y, right_w, right_h, right_r  }
     };
 
-    /* Compact pill center segments (when the pill splits into 3 slices) */
     double seg_w = compact_w / 3.0;
-    double segs[3][2] = { /* x, w */
+    double segs[3][2] = {
         { compact_x,              seg_w },
         { compact_x + seg_w,      seg_w },
         { compact_x + 2.0*seg_w,  seg_w }
@@ -136,13 +151,12 @@ static gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
     if (g_mode == ANIM_EXPAND) {
         /*
          * EXPAND: Compact Island  →  3 Expanded Bars
-         *   Phase 1 (0.00–0.30): Pill smoothly squishes into a thin glowing line
-         *   Phase 2 (0.25–0.70): Line trisects and slides apart (with color blending)
-         *   Phase 3 (0.60–1.00): 3 lines bloom vertically into the 3 full bars
-         *   (phases overlap for fluidity)
+         *   Phase 1 (0.00–0.35): Pill squishes into a unified glowing line
+         *   Phase 2 (0.25–0.75): Line trisects and slides apart
+         *   Phase 3 (0.60–1.00): 3 lines bloom into the 3 full bars
          */
 
-        /* Phase 1: Pill → thin line */
+        /* Phase 1: Pill → thin glowing line */
         if (progress < 0.35) {
             double p = ease_in_out_cubic(progress / 0.35);
 
@@ -150,7 +164,6 @@ static gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
             double y = lerp(compact_y, line_center_y - 1.5, p);
             double r = lerp(compact_r, 1.5, p);
 
-            /* Color shifts from dark glass → glowing mint as it gets thinner */
             double cr_ = lerp(BG_R, GLOW_R, p);
             double cg_ = lerp(BG_G, GLOW_G, p);
             double cb_ = lerp(BG_B, GLOW_B, p);
@@ -166,7 +179,6 @@ static gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
             double line_h = 3.0;
             double line_y = line_center_y - 1.5;
 
-            /* Blend phase 1→2 overlap: fade in during 0.25-0.35 */
             double phase_blend = 1.0;
             if (progress < 0.35) {
                 phase_blend = (progress - 0.25) / 0.10;
@@ -176,30 +188,14 @@ static gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
                 double x = lerp(segs[i][0], bars[i][0], p);
                 double w = lerp(segs[i][1], bars[i][2], p);
 
-                /* Color: left=pink, center=glow, right=mixed as they separate */
-                double cr_, cg_, cb_;
-                if (i == 0) {
-                    cr_ = lerp(GLOW_R, PINK_R, p);
-                    cg_ = lerp(GLOW_G, PINK_G, p);
-                    cb_ = lerp(GLOW_B, PINK_B, p);
-                } else if (i == 2) {
-                    cr_ = lerp(GLOW_R, GLOW_R * 0.8, p);
-                    cg_ = lerp(GLOW_G, GLOW_G * 0.6, p);
-                    cb_ = lerp(GLOW_B, GLOW_B * 1.2, p);
-                    if (cb_ > 1.0) cb_ = 1.0;
-                } else {
-                    cr_ = GLOW_R;
-                    cg_ = GLOW_G;
-                    cb_ = GLOW_B;
-                }
-
+                /* All 3 lines use the single unified accent color */
                 draw_pill(cr, x, line_y, w, line_h, 1.5,
-                          cr_, cg_, cb_, 0.95 * phase_blend * global_alpha, 0.0);
+                          GLOW_R, GLOW_G, GLOW_B, 0.95 * phase_blend * global_alpha, 0.0);
             }
 
-            /* Faint energy traces connecting the 3 segments as they split */
+            /* Connecting energy traces between the 3 segments as they split */
             if (p < 0.85) {
-                double trace_alpha = 0.2 * (1.0 - p / 0.85) * phase_blend * global_alpha;
+                double trace_alpha = 0.20 * (1.0 - p / 0.85) * phase_blend * global_alpha;
                 cairo_set_source_rgba(cr, GLOW_R, GLOW_G, GLOW_B, trace_alpha);
                 cairo_set_line_width(cr, 1.0);
                 double x0end = lerp(segs[0][0]+segs[0][1], bars[0][0]+bars[0][2], p);
@@ -218,7 +214,6 @@ static gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
         if (progress >= 0.60) {
             double p = ease_out_expo((progress - 0.60) / 0.40);
 
-            /* Blend phase 2→3 overlap: fade in during 0.60-0.75 */
             double phase_blend = 1.0;
             if (progress < 0.75) {
                 phase_blend = (progress - 0.60) / 0.15;
@@ -229,20 +224,11 @@ static gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
                 double y = lerp(line_center_y - 1.5, bars[i][1], p);
                 double r = lerp(1.5, bars[i][4], p);
 
-                /* Color transitions from glow back to dark glass */
-                double color_p = p;
-                double cr_, cg_, cb_;
-                if (i == 0) {
-                    cr_ = lerp(PINK_R, BG_R, color_p);
-                    cg_ = lerp(PINK_G, BG_G, color_p);
-                    cb_ = lerp(PINK_B, BG_B, color_p);
-                } else {
-                    cr_ = lerp(GLOW_R, BG_R, color_p);
-                    cg_ = lerp(GLOW_G, BG_G, color_p);
-                    cb_ = lerp(GLOW_B, BG_B, color_p);
-                }
-                double ca_ = lerp(1.0, BG_A, color_p) * phase_blend * global_alpha;
-                double ba_ = lerp(0.0, BORDER_A, color_p) * phase_blend * global_alpha;
+                double cr_ = lerp(GLOW_R, BG_R, p);
+                double cg_ = lerp(GLOW_G, BG_G, p);
+                double cb_ = lerp(GLOW_B, BG_B, p);
+                double ca_ = lerp(1.0, BG_A, p) * phase_blend * global_alpha;
+                double ba_ = lerp(0.0, BORDER_A, p) * phase_blend * global_alpha;
 
                 draw_pill(cr, bars[i][0], y, bars[i][2], h, r, cr_, cg_, cb_, ca_, ba_);
             }
@@ -251,8 +237,8 @@ static gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
     } else {
         /*
          * COLLAPSE: 3 Expanded Bars  →  Compact Island
-         *   Phase 1 (0.00–0.35): 3 bars smoothly flatten into 3 thin lines
-         *   Phase 2 (0.30–0.75): 3 lines glide inward and merge (colors blend)
+         *   Phase 1 (0.00–0.35): 3 bars flatten into 3 thin glowing lines
+         *   Phase 2 (0.30–0.75): 3 lines glide inward and merge
          *   Phase 3 (0.65–1.00): Merged line blooms into the compact island
          */
 
@@ -265,22 +251,9 @@ static gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
                 double y = lerp(bars[i][1], line_center_y - 1.5, p);
                 double r = lerp(bars[i][4], 1.5, p);
 
-                /* Each bar picks up a unique tint as it collapses */
-                double cr_, cg_, cb_;
-                if (i == 0) {
-                    cr_ = lerp(BG_R, PINK_R, p);
-                    cg_ = lerp(BG_G, PINK_G, p);
-                    cb_ = lerp(BG_B, PINK_B, p);
-                } else if (i == 2) {
-                    cr_ = lerp(BG_R, GLOW_R * 0.8, p);
-                    cg_ = lerp(BG_G, GLOW_G * 0.6, p);
-                    cb_ = lerp(BG_B, GLOW_B * 1.2, p);
-                    if (cb_ > 1.0) cb_ = 1.0;
-                } else {
-                    cr_ = lerp(BG_R, GLOW_R, p);
-                    cg_ = lerp(BG_G, GLOW_G, p);
-                    cb_ = lerp(BG_B, GLOW_B, p);
-                }
+                double cr_ = lerp(BG_R, GLOW_R, p);
+                double cg_ = lerp(BG_G, GLOW_G, p);
+                double cb_ = lerp(BG_B, GLOW_B, p);
                 double ca_ = lerp(BG_A, 1.0, p) * global_alpha;
                 double ba_ = lerp(BORDER_A, 0.0, p) * global_alpha;
 
@@ -288,7 +261,7 @@ static gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
             }
         }
 
-        /* Phase 2: 3 lines merge inward */
+        /* Phase 2: 3 lines glide inward and stack */
         if (progress >= 0.30 && progress < 0.80) {
             double p = ease_in_out_cubic((progress - 0.30) / 0.50);
             double line_h = 3.0;
@@ -300,33 +273,17 @@ static gboolean on_draw(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
             }
 
             for (int i = 0; i < 3; i++) {
-                /* Slide from expanded positions → center segments */
                 double x = lerp(bars[i][0], segs[i][0], p);
                 double w = lerp(bars[i][2], segs[i][1], p);
 
-                /* Colors blend toward a uniform glow as they converge */
-                double cr_, cg_, cb_;
-                if (i == 0) {
-                    cr_ = lerp(PINK_R, GLOW_R, p);
-                    cg_ = lerp(PINK_G, GLOW_G, p);
-                    cb_ = lerp(PINK_B, GLOW_B, p);
-                } else if (i == 2) {
-                    cr_ = lerp(GLOW_R * 0.8, GLOW_R, p);
-                    cg_ = lerp(GLOW_G * 0.6, GLOW_G, p);
-                    cb_ = lerp(GLOW_B * 1.2 > 1.0 ? 1.0 : GLOW_B * 1.2, GLOW_B, p);
-                } else {
-                    cr_ = GLOW_R;
-                    cg_ = GLOW_G;
-                    cb_ = GLOW_B;
-                }
-
+                /* All 3 lines use the unified accent color */
                 draw_pill(cr, x, line_y, w, line_h, 1.5,
-                          cr_, cg_, cb_, 0.95 * phase_blend * global_alpha, 0.0);
+                          GLOW_R, GLOW_G, GLOW_B, 0.95 * phase_blend * global_alpha, 0.0);
             }
 
-            /* Energy traces connecting as they converge */
+            /* Connecting traces as lines converge */
             if (p > 0.15) {
-                double trace_alpha = 0.25 * (p - 0.15) / 0.85 * phase_blend * global_alpha;
+                double trace_alpha = 0.20 * (p - 0.15) / 0.85 * phase_blend * global_alpha;
                 cairo_set_source_rgba(cr, GLOW_R, GLOW_G, GLOW_B, trace_alpha);
                 cairo_set_line_width(cr, 1.0);
                 double x0end = lerp(bars[0][0]+bars[0][2], segs[0][0]+segs[0][1], p);
@@ -384,6 +341,8 @@ int main(int argc, char **argv) {
     } else {
         g_mode = ANIM_EXPAND;
     }
+
+    load_accent_color();
 
     gtk_init(&argc, &argv);
 
