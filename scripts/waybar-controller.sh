@@ -52,12 +52,20 @@ toggle_mode() {
         anim="collapse"
     fi
 
-    # Trigger smooth geometric morphing animation overlay
+    # Hide the current waybar instantly (keeps process alive, just invisible)
+    pkill -SIGUSR1 -x waybar 2>/dev/null
+
+    # Launch the morph animation overlay
+    local morph=""
     if command -v bar-morph >/dev/null 2>&1; then
-        bar-morph "$anim" &
+        morph="bar-morph"
     elif [ -x "$HOME/.local/bin/bar-morph" ]; then
-        "$HOME/.local/bin/bar-morph" "$anim" &
+        morph="$HOME/.local/bin/bar-morph"
     fi
+    [ -n "$morph" ] && "$morph" "$anim" &
+
+    # Wait for animation to reach ~60% (the bloom phase), then swap waybar underneath
+    sleep 0.42
 
     start_waybar "$next"
 }
