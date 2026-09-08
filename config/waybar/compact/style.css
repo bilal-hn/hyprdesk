@@ -10,110 +10,133 @@ window#waybar {
     background: transparent;
 }
 
-/* Island container pill */
-.modules-left,
-.modules-center,
-.modules-right {
+/* Single unified Dynamic Island pill */
+.modules-center {
     background: rgba(18, 20, 26, 0.88);
     border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 9999px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-    padding: 2px 6px;
-}
-
-.modules-left {
-    border-radius: 9999px 0 0 9999px;
-    border-right: none;
-    padding-left: 12px;
-}
-
-.modules-center {
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-}
-
-.modules-right {
-    border-radius: 0 9999px 9999px 0;
-    border-left: none;
-    padding-right: 12px;
+    padding: 3px 14px;
+    margin: 0;
 }
 
 /* Clock */
 #clock {
-    color: #e4e1e9;
+    color: #dee4e0;
     font-weight: 700;
-    padding-right: 8px;
+    padding-right: 10px;
+    margin-right: 2px;
 }
 
-/* Workspaces */
-#workspaces {
-    padding: 0 4px;
-}
-
-#workspaces button {
-    color: #797985;
-    background: transparent;
-    padding: 0 5px;
-    margin: 2px 1px;
-    border-radius: 9999px;
-    min-width: 18px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-#workspaces button:hover {
-    color: #e4e1e9;
-    background: rgba(255, 255, 255, 0.08);
-}
-
-#workspaces button.active {
-    background: #e7b9d5;
-    color: #131318;
-    font-weight: 800;
-    padding: 0 9px;
-    border-radius: 9999px;
-}
-
-#workspaces button.urgent {
-    background: #ffb4ab;
-    color: #131318;
-}
-
-/* Right Status Modules */
-#pulseaudio,
-#network,
-#battery,
-#custom-expand {
-    color: #c7c5d0;
-    padding: 0 5px;
-    transition: all 0.2s ease;
-}
-
-#pulseaudio:hover,
-#network:hover,
-#battery:hover,
-#custom-expand:hover {
+#clock:hover {
     color: #ffffff;
 }
 
+/* Workspaces - 3 dots */
+#workspaces {
+    padding: 0 4px;
+    margin: 0 8px 0 4px;
+}
+
+#workspaces button {
+    color: rgba(255, 255, 255, 0.28);
+    background: transparent;
+    padding: 0 3px;
+    margin: 0 2px;
+    border-radius: 9999px;
+    font-size: 8px;
+    transition: all 0.25s ease;
+}
+
+#workspaces button:hover {
+    color: rgba(255, 255, 255, 0.7);
+    background: transparent;
+}
+
+#workspaces button.active {
+    color: #e7b9d5;
+    font-size: 11px;
+    background: transparent;
+}
+
+#workspaces button.urgent {
+    color: #ffb4ab;
+}
+
+/* Sound, Wi-Fi & Battery with clear spacing */
+#pulseaudio {
+    color: #dee4e0;
+    font-size: 14px;
+    padding: 0 4px;
+    margin: 0 6px 0 10px;
+    transition: all 0.2s ease;
+}
+
+#pulseaudio:hover {
+    color: #84d6c2;
+}
+
 #pulseaudio.muted {
-    color: #91909a;
+    color: #797985;
+}
+
+#network {
+    color: #dee4e0;
+    font-size: 14px;
+    padding: 0 4px;
+    margin: 0 6px;
+    transition: all 0.2s ease;
+}
+
+#network:hover {
+    color: #84d6c2;
+}
+
+#network.disconnected {
+    color: #ffb4ab;
+}
+
+/* Battery container pill showing actual percentage */
+#battery {
+    background: rgba(255, 255, 255, 0.08);
+    color: #dee4e0;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 1px 9px;
+    margin: 0 6px;
+    transition: all 0.2s ease;
+}
+
+#battery:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
 }
 
 #battery.charging {
     color: #84d6c2;
+    background: rgba(132, 214, 194, 0.12);
 }
 
 #battery.warning:not(.charging) {
     color: #f9e2af;
+    background: rgba(249, 226, 175, 0.12);
 }
 
 #battery.critical:not(.charging) {
     color: #ffb4ab;
+    background: rgba(255, 180, 171, 0.18);
 }
 
+/* Expand toggle arrow */
 #custom-expand {
     color: #84d6c2;
-    font-size: 14px;
-    padding-left: 4px;
+    font-size: 13px;
+    padding: 0 2px 0 6px;
+    margin-left: 2px;
+    transition: all 0.2s ease;
+}
+
+#custom-expand:hover {
+    color: #ffffff;
 }

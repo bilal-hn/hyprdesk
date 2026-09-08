@@ -2,16 +2,11 @@
     "layer": "top",
     "position": "top",
     "height": 34,
-    "width": 360,
     "spacing": 0,
     "margin-top": 8,
-    "modules-left": [
-        "clock#time"
-    ],
     "modules-center": [
-        "hyprland/workspaces"
-    ],
-    "modules-right": [
+        "clock#time",
+        "hyprland/workspaces",
         "pulseaudio",
         "network",
         "battery",
@@ -25,9 +20,15 @@
     "hyprland/workspaces": {
         "disable-scroll": false,
         "all-outputs": true,
-        "format": "{name}",
+        "format": "{icon}",
+        "format-icons": {
+            "1": "",
+            "2": "",
+            "3": "",
+            "default": ""
+        },
         "persistent-workspaces": {
-            "*": [1, 2, 3, 4, 5]
+            "*": [1, 2, 3]
         }
     },
     "pulseaudio": {
@@ -36,7 +37,7 @@
         "format-icons": {
             "default": ["󰕿", "󰖀", "󰕾"]
         },
-        "tooltip-format": "Volume: {volume}%",
+        "tooltip-format": "Volume: {volume}%\nLeft click: Mute | Right click: Mixer",
         "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
         "on-click-right": "pavucontrol",
         "scroll-step": 5
@@ -46,20 +47,24 @@
         "format-ethernet": "󰈀",
         "format-linked": "󰈀",
         "format-disconnected": "󰤭",
-        "tooltip-format-wifi": "{essid} ({signalStrength}%)",
-        "tooltip-format-ethernet": "{ifname}: {ipaddr}/{cidr}",
-        "tooltip-format-disconnected": "Disconnected"
+        "tooltip-format-wifi": "󰤨 {essid} ({signalStrength}%)\nIP: {ipaddr}\nClick for network settings",
+        "tooltip-format-ethernet": "󰈀 {ifname}: {ipaddr}/{cidr}\nClick for network settings",
+        "tooltip-format-disconnected": "󰤭 Disconnected\nClick to connect",
+        "on-click": "noctalia msg panel-toggle control-center network",
+        "on-click-right": "kitty --class=floating-term -e nmtui"
     },
     "battery": {
         "states": {
             "warning": 30,
             "critical": 15
         },
-        "format": "{icon}",
-        "format-charging": "󱐋",
-        "format-plugged": "󰚥",
+        "format": "{icon} {capacity}%",
+        "format-charging": "󱐋 {capacity}%",
+        "format-plugged": "󰚥 {capacity}%",
         "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
-        "tooltip-format": "{capacity}% ({time})"
+        "tooltip-format": "{capacity}% ({time})\nClick for power controls",
+        "on-click": "noctalia msg panel-toggle control-center power",
+        "on-click-right": "sh -c 'notify-send -a \"Power\" \"Battery Details\" \"$(upower -i /org/freedesktop/UPower/devices/DisplayDevice | grep -E \"state|percentage|time to|energy-rate\")\" -i battery'"
     },
     "custom/expand": {
         "format": "󰁔",
