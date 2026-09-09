@@ -25,6 +25,10 @@ window#waybar {
 }
 
 /* Left: Distro & Window Title */
+.modules-left {
+    min-width: 140px;
+}
+
 #custom-distro {
     color: @accent;
     font-size: 15px;

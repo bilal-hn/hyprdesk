@@ -55,6 +55,7 @@ start_waybar() {
     while pgrep -x waybar >/dev/null; do sleep 0.05; done
 
     waybar -c "$cfg" -s "$css" >/dev/null 2>&1 &
+    disown
 }
 
 toggle_mode() {

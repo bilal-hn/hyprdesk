@@ -34,10 +34,13 @@
     },
     "hyprland/window": {
         "format": "{}",
-        "max-length": 35,
+        "max-length": 22,
         "rewrite": {
-            "": "Empty",
-            "^$": "Empty"
+            "": "Desktop",
+            "^$": "Desktop",
+            "\\((.*)\\) Discord \\| (.*)": "Discord: $2",
+            "(.*) — Mozilla Firefox": "Firefox: $1",
+            "(.*) - Google Chrome": "Chrome: $1"
         },
         "separate-outputs": true
     },
