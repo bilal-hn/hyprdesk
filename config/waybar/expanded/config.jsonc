@@ -19,6 +19,7 @@
         "custom/media"
     ],
     "modules-right": [
+        "custom/home",
         "custom/dnd",
         "tray",
         "memory",
@@ -68,6 +69,11 @@
         "format": "",
         "tooltip": "Media Play / Pause",
         "on-click": "playerctl play-pause"
+    },
+    "custom/home": {
+        "format": "",
+        "tooltip": "Control Center (Home, Display, WiFi, Sound, Battery)",
+        "on-click": "noctalia msg panel-toggle control-center"
     },
     "custom/dnd": {
         "format": "󰂚",

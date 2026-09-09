@@ -63,6 +63,7 @@ window#waybar {
 }
 
 /* Right: Telemetry & Controls */
+#custom-home,
 #custom-dnd,
 #tray,
 #memory,
@@ -75,6 +76,7 @@ window#waybar {
     transition: all 0.2s ease;
 }
 
+#custom-home:hover,
 #custom-dnd:hover,
 #memory:hover,
 #battery:hover,
