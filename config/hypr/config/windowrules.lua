@@ -114,3 +114,11 @@ hl.window_rule({
     },
     no_focus = true,
 })
+
+-- Layer rules for Control Center, OSD, and Noctalia panels
+hl.layer_rule({
+    match        = { namespace = "^(noctalia-.*)$" },
+    blur         = true,
+    blur_popups  = true,
+    ignore_alpha = 0.2,
+})

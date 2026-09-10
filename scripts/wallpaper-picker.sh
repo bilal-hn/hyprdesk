@@ -44,9 +44,22 @@ if command -v noctalia >/dev/null 2>&1; then
 @define-color subtle #89938f;
 @define-color border-glass rgba($R, $G, $B, 0.20);
 EOF
+        # Sync colors with hyprlock
+        cat <<EOF > "$HOME/.cache/hyprdesk/hyprlock-colors.conf"
+\$accent = rgb($R, $G, $B)
+\$accentAlpha = $HEX
+\$base = rgb(14, 21, 19)
+\$text = rgb(222, 228, 224)
+\$subtle = rgb(137, 147, 143)
+\$surface = rgba(14, 21, 19, 0.75)
+EOF
         # Reload Waybar styles
         pkill -SIGUSR2 -x waybar 2>/dev/null || true
     fi
+    # Cache wallpaper path for hyprlock
+    cp -f "$SELECTED" "$HOME/.cache/hyprdesk/current_wallpaper" 2>/dev/null || true
+    # Update Noctalia's wallpaper theme so Control Center & panels sync immediately
+    noctalia msg wallpaper-set "$SELECTED" 2>/dev/null || true
 fi
 
 # Desktop notification

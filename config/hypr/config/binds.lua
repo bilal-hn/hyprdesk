@@ -78,7 +78,7 @@ hl.bind(mainMod .. " + Z",          hl.dsp.exec_cmd(noctCall .. "settings-toggle
 hl.bind(mainMod .. " + X",          hl.dsp.exec_cmd(noctCall .. "panel-toggle control-center"))
 hl.bind(mainMod .. " + Space",      hl.dsp.exec_cmd("pkill -x rofi || rofi -show drun"))
 hl.bind(mainMod .. " + period",     hl.dsp.exec_cmd(noctCall .. "panel-toggle launcher /emo"))
-hl.bind(mainMod .. " + L",          hl.dsp.exec_cmd(noctCall .. "session lock"))
+hl.bind(mainMod .. " + L",          hl.dsp.exec_cmd("pidof hyprlock || hyprlock"))
 hl.bind(mainMod .. " + ALT + C",    hl.dsp.exec_cmd(noctCall .. "panel-toggle session"))
 hl.bind(mainMod .. " + B",          hl.dsp.exec_cmd("/home/bihhlal/Projects/Personal/hyprdesk/scripts/waybar-controller.sh toggle-hide"))
 hl.bind(mainMod .. " + SHIFT + B",  hl.dsp.exec_cmd("/home/bihhlal/Projects/Personal/hyprdesk/scripts/waybar-controller.sh toggle-mode"))

@@ -18,3 +18,5 @@ hl.animation({ leaf = "windows",             enabled = true, speed = 3, spring =
 hl.animation({ leaf = "workspaces",          enabled = true, speed = 5, bezier = "quick", style = "slide" })
 hl.animation({ leaf = "specialWorkspaceIn",  enabled = true, speed = 2, bezier = "quick", style = "slide top"})
 hl.animation({ leaf = "specialWorkspaceOut", enabled = true, speed = 2, bezier = "quick", style = "slide bottom"})
+hl.animation({ leaf = "layers",              enabled = true, speed = 4, bezier = "easeOutQuint", style = "popin 85%" })
+hl.animation({ leaf = "fadeLayers",          enabled = true, speed = 3, bezier = "easeOutQuint"           })
