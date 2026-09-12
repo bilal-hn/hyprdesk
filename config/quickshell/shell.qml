@@ -203,4 +203,25 @@ Scope {
             }
         }
     }
+
+    // Horizontal Row Wallpaper Picker
+    WallpaperRowPicker {
+        id: wallpaperPicker
+    }
+
+    IpcHandler {
+        target: "wallpaper"
+
+        function toggle() {
+            wallpaperPicker.toggle();
+        }
+
+        function open() {
+            wallpaperPicker.open();
+        }
+
+        function close() {
+            wallpaperPicker.close();
+        }
+    }
 }

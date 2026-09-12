@@ -9,7 +9,7 @@ CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/hyprdesk"
 STATE_FILE="$CACHE_DIR/waybar-mode"
 VISIBILITY_FILE="$CACHE_DIR/waybar-visibility"
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/waybar"
-BAR_TOP_GAP=44
+BAR_TOP_GAP=40
 
 mkdir -p "$CACHE_DIR"
 
