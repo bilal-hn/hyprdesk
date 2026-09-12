@@ -1,7 +1,7 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 38,
+    "height": 20,
     "exclusive": false,
     "margin-top": 6,
     "margin-left": 12,
@@ -20,7 +20,6 @@
     ],
     "modules-right": [
         "custom/home",
-        "custom/dnd",
         "tray",
         "memory",
         "battery",
@@ -75,11 +74,6 @@
         "format": "",
         "tooltip": "Control Center Dashboard",
         "on-click": "/home/bihhlal/Projects/Personal/hyprdesk/scripts/toggle-dashboard.sh home"
-    },
-    "custom/dnd": {
-        "format": "󰂚",
-        "tooltip": "Toggle Notifications / DND",
-        "on-click": "noctalia msg notification-dnd-toggle"
     },
     "tray": {
         "icon-size": 15,

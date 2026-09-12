@@ -64,7 +64,6 @@ window#waybar {
 
 /* Right: Telemetry & Controls */
 #custom-home,
-#custom-dnd,
 #tray,
 #memory,
 #battery,
@@ -77,7 +76,6 @@ window#waybar {
 }
 
 #custom-home:hover,
-#custom-dnd:hover,
 #memory:hover,
 #battery:hover,
 #clock:hover {
