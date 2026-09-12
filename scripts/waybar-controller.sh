@@ -54,7 +54,9 @@ start_waybar() {
     pkill -x waybar 2>/dev/null
     while pgrep -x waybar >/dev/null; do sleep 0.05; done
 
-    setsid waybar -c "$cfg" -s "$css" >/dev/null 2>&1 &
+    export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-1}"
+    export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/1000}"
+    nohup waybar -c "$cfg" -s "$css" >/dev/null 2>&1 &
 }
 
 toggle_mode() {
@@ -109,6 +111,44 @@ toggle_hide() {
     fi
 }
 
+watch_mode() {
+    local script_path="$(realpath "$0")"
+    echo "Waybar Live Reloader active! Watching $CONFIG_DIR for file changes..."
+    echo "Press Ctrl+C to stop."
+    python3 -c "
+import os, time, subprocess
+
+watch_dir = '$CONFIG_DIR'
+script_path = '$script_path'
+
+def get_mtimes():
+    m = {}
+    for root, _, files in os.walk(watch_dir):
+        for f in files:
+            if f.endswith(('.css', '.jsonc', '.json')):
+                p = os.path.join(root, f)
+                try:
+                    m[p] = os.path.getmtime(p)
+                except OSError:
+                    pass
+    return m
+
+last = get_mtimes()
+while True:
+    time.sleep(0.25)
+    curr = get_mtimes()
+    if curr != last:
+        changed_json = any(f.endswith('.jsonc') for f in curr if curr.get(f) != last.get(f))
+        last = curr
+        if changed_json:
+            subprocess.run([script_path, 'restart'])
+            print('Detected config change -> Restarted Waybar.')
+        else:
+            subprocess.run(['pkill', '-SIGUSR2', '-x', 'waybar'])
+            print('Detected style change -> Reloaded Waybar styles.')
+"
+}
+
 case "$1" in
     toggle-mode)
         toggle_mode
@@ -122,8 +162,11 @@ case "$1" in
     restart)
         start_waybar
         ;;
+    watch)
+        watch_mode
+        ;;
     *)
-        echo "Usage: $0 {toggle-mode|toggle-hide|start [compact|expanded]|restart}"
+        echo "Usage: $0 {toggle-mode|toggle-hide|start [compact|expanded]|restart|watch}"
         exit 1
         ;;
 esac

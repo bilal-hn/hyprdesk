@@ -35,10 +35,11 @@
     },
     "hyprland/window": {
         "format": "{}",
-        "max-length": 22,
+        "max-length": 14,
         "rewrite": {
             "": "Desktop",
             "^$": "Desktop",
+            "(.*)Helium(.*)": "Helium: $1",
             "\\((.*)\\) Discord \\| (.*)": "Discord: $2",
             "(.*) — Mozilla Firefox": "Firefox: $1",
             "(.*) - Google Chrome": "Chrome: $1"
