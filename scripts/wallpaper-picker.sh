@@ -78,6 +78,8 @@ EOF
 EOF
         # Reload Waybar styles
         pkill -SIGUSR2 -x waybar 2>/dev/null || true
+        # Update Hyprland window borders dynamically
+        hyprctl eval "hl.config({ general = { col = { active_border = 'rgba(${HEX}ff)', inactive_border = 'rgba(${HEX}33)' } } })" 2>/dev/null || true
     fi
     # Cache wallpaper path for hyprlock
     cp -f "$SELECTED" "$HOME/.cache/hyprdesk/current_wallpaper" 2>/dev/null || true

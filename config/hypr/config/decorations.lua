@@ -8,11 +8,8 @@ hl.config({
         extend_border_grab_area = 10,
         resize_on_border = true,
         col = {
-            active_border = {
-                colors = { CACHYLGREEN, CACHYDGREEN },
-                angle = 45,
-            },
-            inactive_border = CACHYGRAY,
+            active_border = WALLPAPER_ACCENT,
+            inactive_border = WALLPAPER_INACTIVE,
         },
     },
     group = {
