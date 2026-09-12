@@ -6,12 +6,21 @@ import Quickshell.Io
 QtObject {
     id: theme
 
-    // Dynamic wallpaper-derived colors
+    // Dynamic accent color from wallpaper (Material 3)
     property color accent: "#81d5cc"
-    property color bg: "#11111b"
-    property color surface: "#181825"
-    property color surfaceVariant: "#1e1e2e"
-    property color border: "#313244"
+
+    // Transparency Controls (Adjust these values to your liking!)
+    // 0.0 = completely transparent, 1.0 = completely solid
+    property real bgOpacity: 0.65       // Overall dashboard window opacity
+    property real cardOpacity: 0.35     // Transparency of all inner cards (Calendar, Notifications, System cards, etc.)
+
+    // Backgrounds (using the controllable opacities)
+    property color bg: Qt.rgba(0.067, 0.067, 0.106, bgOpacity)
+    property color surface: Qt.rgba(0.094, 0.094, 0.145, cardOpacity)
+    property color surfaceVariant: Qt.rgba(0.118, 0.118, 0.180, cardOpacity)
+    property color border: Qt.rgba(1.0, 1.0, 1.0, 0.10)
+
+    // Foreground / Accents
     property color fg: "#cdd6f4"
     property color subtle: "#6c7086"
     property color error: "#f38ba8"
@@ -26,7 +35,7 @@ QtObject {
     property string iconFont: "MesloLGS NF"
     property string textFont: "Inter"
 
-    // Backend sync with wallpaper accent
+    // Backend sync: ONLY syncs dynamic wallpaper accent color, never overwriting your opacity settings
     property var watcher: Process {
         command: ["cat", Quickshell.env("HOME") + "/.cache/hyprdesk/theme.json"]
         stdout: StdioCollector {
@@ -34,11 +43,6 @@ QtObject {
                 try {
                     const data = JSON.parse(text);
                     if (data.accent) theme.accent = data.accent;
-                    if (data.bg) theme.bg = data.bg;
-                    if (data.surface) theme.surface = data.surface;
-                    if (data.border) theme.border = data.border;
-                    if (data.fg) theme.fg = data.fg;
-                    if (data.subtle) theme.subtle = data.subtle;
                 } catch (e) {}
             }
         }

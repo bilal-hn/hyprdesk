@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls 2.15
 import Quickshell
 import Quickshell.Io
+import Quickshell.Hyprland
 import Quickshell.Wayland
 import "./components"
 
@@ -14,6 +15,9 @@ Scope {
 
     function toggle() {
         root.shown = !root.shown;
+        if (root.shown) {
+            Qt.callLater(() => mainContainer.forceActiveFocus());
+        }
     }
 
     function open(tab: string) {
@@ -21,6 +25,7 @@ Scope {
             root.currentTab = tab;
         }
         root.shown = true;
+        Qt.callLater(() => mainContainer.forceActiveFocus());
     }
 
     function close() {
@@ -43,29 +48,6 @@ Scope {
         }
     }
 
-    // Dismiss overlay covering the screen when open
-    PanelWindow {
-        id: dismissOverlay
-        visible: root.shown
-
-        WlrLayershell.layer: WlrLayer.Overlay
-        WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
-        WlrLayershell.namespace: "hyprdesk-dismiss"
-
-        anchors {
-            top: true
-            bottom: true
-            left: true
-            right: true
-        }
-        color: "transparent"
-
-        MouseArea {
-            anchors.fill: parent
-            onPressed: root.close()
-        }
-    }
-
     // The Dashboard Card Panel Window
     PanelWindow {
         id: dashboardWindow
@@ -83,12 +65,19 @@ Scope {
         margins.right: 16
         color: "transparent"
 
+        // Native focus grab: clears ONLY when clicking outside the window
+        HyprlandFocusGrab {
+            active: root.shown
+            windows: [dashboardWindow]
+            onCleared: root.close()
+        }
+
         Rectangle {
             id: mainContainer
             anchors.fill: parent
-            color: Qt.rgba(0.067, 0.067, 0.106, 0.92)
+            color: Theme.bg
             radius: 22
-            border.color: Qt.rgba(1, 1, 1, 0.12)
+            border.color: Theme.border
             border.width: 1
             clip: true
 
@@ -104,7 +93,7 @@ Scope {
                 Rectangle {
                     Layout.fillWidth: true
                     height: 46
-                    color: Qt.rgba(0, 0, 0, 0.40)
+                    color: Qt.rgba(0, 0, 0, 0.25)
                     radius: 999
                     border.width: 0
 
