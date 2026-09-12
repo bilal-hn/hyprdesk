@@ -27,7 +27,15 @@ awww img "$SELECTED" --transition-type wipe --transition-fps 60
 
 # Extract dynamic color palette from wallpaper and sync with Waybar
 if command -v noctalia >/dev/null 2>&1; then
-    PALETTE="$(noctalia theme "$SELECTED" --dark 2>/dev/null)"
+    # Auto-detect scheme: if grayscale / monochrome, use m3-monochrome; otherwise use vibrant for true reds/oranges/greens
+    SCHEME="vibrant"
+    if command -v magick >/dev/null 2>&1; then
+        SAT=$(magick "$SELECTED" -colorspace HSL -channel G -separate -format "%[mean]" info: 2>/dev/null || echo "10000")
+        if awk "BEGIN {exit !($SAT < 2000)}"; then
+            SCHEME="m3-monochrome"
+        fi
+    fi
+    PALETTE="$(noctalia theme "$SELECTED" --scheme "$SCHEME" --dark 2>/dev/null)"
     PRIMARY="$(echo "$PALETTE" | grep '"primary":' | head -1 | cut -d'"' -f4)"
     if [ -n "$PRIMARY" ]; then
         HEX="${PRIMARY#\#}"
