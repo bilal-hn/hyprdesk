@@ -53,6 +53,21 @@ EOF
 \$subtle = rgb(137, 147, 143)
 \$surface = rgba(14, 21, 19, 0.75)
 EOF
+        # Sync colors with quickshell dashboard
+        cat <<EOF > "$HOME/.cache/hyprdesk/theme.json"
+{
+  "accent": "$PRIMARY",
+  "r": $R,
+  "g": $G,
+  "b": $B,
+  "bg": "#11111b",
+  "surface": "#181825",
+  "surfaceVariant": "#1e1e2e",
+  "border": "#313244",
+  "fg": "#cdd6f4",
+  "subtle": "#6c7086"
+}
+EOF
         # Reload Waybar styles
         pkill -SIGUSR2 -x waybar 2>/dev/null || true
     fi

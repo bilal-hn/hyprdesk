@@ -75,7 +75,7 @@ hl.bind("XF86Calculator",           hl.dsp.exec_cmd(launchPrefix .. CALCULATOR))
 hl.bind(mainMod .. " + W",          hl.dsp.exec_cmd(launchPrefix .. BROWSER))
 hl.bind("CONTROL + SHIFT + Escape", hl.dsp.exec_cmd(launchPrefix .. TERMINAL .. " -e btop"))
 hl.bind(mainMod .. " + Z",          hl.dsp.exec_cmd(noctCall .. "settings-toggle"))
-hl.bind(mainMod .. " + X",          hl.dsp.exec_cmd(noctCall .. "panel-toggle control-center"))
+hl.bind(mainMod .. " + X",          hl.dsp.exec_cmd("/home/bihhlal/Projects/Personal/hyprdesk/scripts/toggle-dashboard.sh"))
 hl.bind(mainMod .. " + Space",      hl.dsp.exec_cmd("pkill -x rofi || rofi -show drun"))
 hl.bind(mainMod .. " + period",     hl.dsp.exec_cmd(noctCall .. "panel-toggle launcher /emo"))
 hl.bind(mainMod .. " + L",          hl.dsp.exec_cmd("pidof hyprlock || hyprlock"))
@@ -119,8 +119,8 @@ hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("/home/bihhlal/Projects/Perso
 -- Clipboard
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(noctCall .. "panel-toggle clipboard"))
 
--- Notifications
-hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(noctCall .. "panel-toggle control-center notifications"))
+-- Notifications & Dashboard
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("/home/bihhlal/Projects/Personal/hyprdesk/scripts/toggle-dashboard.sh home"))
 
 -------------------------------
 ---- WORKSPACES & MONITORS ----

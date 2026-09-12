@@ -51,7 +51,7 @@
         "tooltip-format-wifi": "󰤨 {essid} ({signalStrength}%)\nIP: {ipaddr}\nClick for network settings",
         "tooltip-format-ethernet": "󰈀 {ifname}: {ipaddr}/{cidr}\nClick for network settings",
         "tooltip-format-disconnected": "󰤭 Disconnected\nClick to connect",
-        "on-click": "noctalia msg panel-toggle control-center network",
+        "on-click": "/home/bihhlal/Projects/Personal/hyprdesk/scripts/toggle-dashboard.sh network",
         "on-click-right": "kitty --class=floating-term -e nmtui"
     },
     "battery": {
@@ -64,7 +64,7 @@
         "format-plugged": "󰚥 {capacity}%",
         "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
         "tooltip-format": "{capacity}% ({time})\nClick for power controls",
-        "on-click": "noctalia msg panel-toggle control-center power",
+        "on-click": "/home/bihhlal/Projects/Personal/hyprdesk/scripts/toggle-dashboard.sh power",
         "on-click-right": "sh -c 'notify-send -a \"Power\" \"Battery Details\" \"$(upower -i /org/freedesktop/UPower/devices/DisplayDevice | grep -E \"state|percentage|time to|energy-rate\")\" -i battery'"
     },
     "custom/expand": {

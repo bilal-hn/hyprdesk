@@ -122,3 +122,11 @@ hl.layer_rule({
     blur_popups  = true,
     ignore_alpha = 0.2,
 })
+
+-- Layer rules for Hyprdesk Quickshell Dashboard
+hl.layer_rule({
+    match        = { namespace = "^(hyprdesk-.*)$" },
+    blur         = true,
+    blur_popups  = true,
+    ignore_alpha = 0.2,
+})
