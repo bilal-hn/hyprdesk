@@ -101,23 +101,23 @@ PanelWindow {
         }
     }
 
-    // Floating Bottom-Center Dock / Strip
+    // Floating Bottom-Center Dock
     Rectangle {
         id: pickerCard
         width: Math.min(parent.width - 60, 880)
-        height: 236
+        height: 200
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 48
+        anchors.bottomMargin: 42
 
         color: Theme.bg
         radius: 20
         border.color: Theme.border
         border.width: 1
-        clip: true // Guarantees nothing bleeds outside the dock boundary
+        clip: true // Cleanly clips items within dock boundaries
 
         // Smooth slide-up & pop-in animation from bottom
-        y: pickerWindow.shown ? (parent.height - height - 48) : (parent.height - height)
+        y: pickerWindow.shown ? (parent.height - height - 42) : (parent.height - height)
         scale: pickerWindow.shown ? 1.0 : 0.95
         opacity: pickerWindow.shown ? 1.0 : 0.0
         Behavior on y {
@@ -161,69 +161,47 @@ PanelWindow {
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 14
-            spacing: 8
+            spacing: 6
 
-            // Top Header Bar
+            // Top Header Bar: ONLY "WALLPAPERS" header text
             RowLayout {
                 Layout.fillWidth: true
+                spacing: 6
 
-                RowLayout {
-                    spacing: 6
-                    Text {
-                        text: "󰸉"
-                        font.family: Theme.iconFont
-                        font.pixelSize: 15
-                        color: Theme.accent
-                    }
-                    Text {
-                        text: "WALLPAPERS"
-                        font.family: Theme.textFont
-                        font.pixelSize: 11
-                        font.weight: Font.DemiBold
-                        color: Theme.fg
-                    }
+                Text {
+                    text: "󰸉"
+                    font.family: Theme.iconFont
+                    font.pixelSize: 15
+                    color: Theme.accent
                 }
-
-                Item { Layout.fillWidth: true }
-
-                // Counter badge
-                Rectangle {
-                    color: Qt.rgba(255, 255, 255, 0.08)
-                    radius: 10
-                    implicitWidth: countText.implicitWidth + 14
-                    implicitHeight: 20
-
-                    Text {
-                        id: countText
-                        anchors.centerIn: parent
-                        text: (pickerWindow.currentIndex + 1) + " / " + (pickerWindow.wallpapers.length || 0)
-                        font.family: Theme.textFont
-                        font.pixelSize: 10
-                        font.weight: Font.Medium
-                        color: Theme.subtle
-                    }
+                Text {
+                    text: "WALLPAPERS"
+                    font.family: Theme.textFont
+                    font.pixelSize: 11
+                    font.weight: Font.DemiBold
+                    color: Theme.fg
                 }
             }
 
-            // Horizontal Cards Carousel (Clipped cleanly within the dock)
+            // Horizontal Cards Carousel with Dynamic Size Scale Animation
             ListView {
                 id: wallpaperList
                 Layout.fillWidth: true
-                Layout.preferredHeight: 128
+                Layout.fillHeight: true
                 orientation: ListView.Horizontal
-                spacing: 12
-                clip: true // Strictly clips items to stay inside the dock boundaries
+                spacing: 16
+                clip: true
 
                 model: pickerWindow.wallpapers
                 currentIndex: pickerWindow.currentIndex
 
                 highlightFollowsCurrentItem: true
-                preferredHighlightBegin: width / 2 - 85
-                preferredHighlightEnd: width / 2 + 85
+                preferredHighlightBegin: width / 2 - 88
+                preferredHighlightEnd: width / 2 + 88
                 highlightRangeMode: ListView.StrictlyEnforceRange
 
-                header: Item { width: Math.max(0, (wallpaperList.width - 170) / 2) }
-                footer: Item { width: Math.max(0, (wallpaperList.width - 170) / 2) }
+                header: Item { width: Math.max(0, (wallpaperList.width - 175) / 2) }
+                footer: Item { width: Math.max(0, (wallpaperList.width - 175) / 2) }
 
                 // Mouse wheel horizontal scroll
                 WheelHandler {
@@ -239,29 +217,38 @@ PanelWindow {
 
                 delegate: Item {
                     id: cardItem
-                    width: 170
-                    height: 110
+                    width: 175
+                    height: 112
                     anchors.verticalCenter: parent.verticalCenter
 
                     property bool isCurrent: index === pickerWindow.currentIndex
                     property bool hovered: cardMouseArea.containsMouse
 
-                    scale: isCurrent ? 1.07 : (hovered ? 1.02 : 0.94)
+                    // Dynamic scale: Selected card grows to 1.18, unselected shrink to 0.88
+                    scale: isCurrent ? 1.18 : (hovered ? 0.98 : 0.88)
                     z: isCurrent ? 10 : 1
-                    opacity: isCurrent ? 1.0 : (hovered ? 0.90 : 0.60)
+                    opacity: isCurrent ? 1.0 : (hovered ? 0.85 : 0.50)
 
+                    // Bouncy fluid animation when selecting/deselecting via arrow keys
                     Behavior on scale {
-                        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+                        NumberAnimation {
+                            duration: 240
+                            easing.type: Easing.OutBack
+                            easing.overshoot: 1.2
+                        }
                     }
                     Behavior on opacity {
-                        NumberAnimation { duration: 180 }
+                        NumberAnimation {
+                            duration: 200
+                            easing.type: Easing.OutCubic
+                        }
                     }
 
                     // Card Container
                     Item {
                         anchors.fill: parent
 
-                        // Smooth rounded mask for true anti-aliased rounded corners
+                        // Smooth rounded mask for anti-aliased rounded corners
                         Rectangle {
                             id: cardMask
                             anchors.fill: parent
@@ -270,7 +257,7 @@ PanelWindow {
                             layer.enabled: true
                         }
 
-                        // Raw thumbnail image
+                        // Thumbnail image
                         Image {
                             id: cardImg
                             anchors.fill: parent
@@ -281,7 +268,7 @@ PanelWindow {
                             visible: false
                         }
 
-                        // MultiEffect mask: completely removes square edgy corners!
+                        // MultiEffect mask: completely removes square edgy corners
                         MultiEffect {
                             anchors.fill: parent
                             source: cardImg
@@ -289,7 +276,7 @@ PanelWindow {
                             maskSource: cardMask
                         }
 
-                        // Rounded Border overlay matching the mask radius
+                        // Rounded Border overlay: bright accent for current, subtle for others
                         Rectangle {
                             anchors.fill: parent
                             radius: 14
@@ -308,73 +295,6 @@ PanelWindow {
                             pickerWindow.currentIndex = index;
                             pickerWindow.applyCurrent();
                         }
-                    }
-                }
-            }
-
-            // Bottom Info Bar: Selected Name & Key Hints
-            RowLayout {
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignHCenter
-                spacing: 10
-
-                // Selected Wallpaper Name Badge
-                Rectangle {
-                    color: Qt.rgba(255, 255, 255, 0.08)
-                    radius: 999
-                    border.color: Qt.rgba(255, 255, 255, 0.10)
-                    border.width: 1
-                    implicitWidth: titleText.implicitWidth + 20
-                    implicitHeight: 24
-
-                    Text {
-                        id: titleText
-                        anchors.centerIn: parent
-                        text: (pickerWindow.wallpapers.length > pickerWindow.currentIndex && pickerWindow.wallpapers[pickerWindow.currentIndex])
-                              ? pickerWindow.wallpapers[pickerWindow.currentIndex].name
-                              : ""
-                        font.family: Theme.textFont
-                        font.pixelSize: 11
-                        font.weight: Font.Medium
-                        color: Theme.fg
-                    }
-                }
-
-                Item { Layout.fillWidth: true }
-
-                // Navigation Hints
-                RowLayout {
-                    spacing: 8
-                    Text {
-                        text: "← / → Browse"
-                        font.family: Theme.textFont
-                        font.pixelSize: 10
-                        color: Theme.subtle
-                    }
-                    Text {
-                        text: "•"
-                        font.family: Theme.textFont
-                        font.pixelSize: 10
-                        color: Qt.rgba(255, 255, 255, 0.2)
-                    }
-                    Text {
-                        text: "Enter Apply"
-                        font.family: Theme.textFont
-                        font.pixelSize: 10
-                        font.weight: Font.Medium
-                        color: Theme.accent
-                    }
-                    Text {
-                        text: "•"
-                        font.family: Theme.textFont
-                        font.pixelSize: 10
-                        color: Qt.rgba(255, 255, 255, 0.2)
-                    }
-                    Text {
-                        text: "Esc Cancel"
-                        font.family: Theme.textFont
-                        font.pixelSize: 10
-                        color: Theme.subtle
                     }
                 }
             }
