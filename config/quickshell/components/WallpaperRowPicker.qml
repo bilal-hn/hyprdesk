@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls 2.15
+import QtQuick.Effects
 import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
@@ -93,34 +94,40 @@ PanelWindow {
     // Subtle dark backdrop overlay
     Rectangle {
         anchors.fill: parent
-        color: Qt.rgba(0, 0, 0, 0.45)
+        color: Qt.rgba(0, 0, 0, 0.40)
         opacity: pickerWindow.shown ? 1 : 0
         Behavior on opacity {
-            NumberAnimation { duration: 200 }
+            NumberAnimation { duration: 180 }
         }
     }
 
-    // Floating Center Dock / Strip
+    // Floating Bottom-Center Dock / Strip
     Rectangle {
         id: pickerCard
-        width: Math.min(parent.width - 80, 1120)
-        height: 330
+        width: Math.min(parent.width - 60, 880)
+        height: 236
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 48
 
         color: Theme.bg
-        radius: 24
+        radius: 20
         border.color: Theme.border
         border.width: 1
+        clip: true // Guarantees nothing bleeds outside the dock boundary
 
-        // Smooth pop-in animation
-        scale: pickerWindow.shown ? 1.0 : 0.94
+        // Smooth slide-up & pop-in animation from bottom
+        y: pickerWindow.shown ? (parent.height - height - 48) : (parent.height - height)
+        scale: pickerWindow.shown ? 1.0 : 0.95
         opacity: pickerWindow.shown ? 1.0 : 0.0
+        Behavior on y {
+            NumberAnimation { duration: 250; easing.type: Easing.OutCubic }
+        }
         Behavior on scale {
-            NumberAnimation { duration: 250; easing.type: Easing.OutBack }
+            NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
         }
         Behavior on opacity {
-            NumberAnimation { duration: 200 }
+            NumberAnimation { duration: 180 }
         }
 
         // Prevent click-through closing when clicking inside the dock
@@ -153,25 +160,25 @@ PanelWindow {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 18
-            spacing: 12
+            anchors.margins: 14
+            spacing: 8
 
             // Top Header Bar
             RowLayout {
                 Layout.fillWidth: true
 
                 RowLayout {
-                    spacing: 8
+                    spacing: 6
                     Text {
                         text: "󰸉"
                         font.family: Theme.iconFont
-                        font.pixelSize: 18
+                        font.pixelSize: 15
                         color: Theme.accent
                     }
                     Text {
                         text: "WALLPAPERS"
                         font.family: Theme.textFont
-                        font.pixelSize: 13
+                        font.pixelSize: 11
                         font.weight: Font.DemiBold
                         color: Theme.fg
                     }
@@ -182,38 +189,41 @@ PanelWindow {
                 // Counter badge
                 Rectangle {
                     color: Qt.rgba(255, 255, 255, 0.08)
-                    radius: 12
-                    implicitWidth: countText.implicitWidth + 16
-                    implicitHeight: 24
+                    radius: 10
+                    implicitWidth: countText.implicitWidth + 14
+                    implicitHeight: 20
 
                     Text {
                         id: countText
                         anchors.centerIn: parent
                         text: (pickerWindow.currentIndex + 1) + " / " + (pickerWindow.wallpapers.length || 0)
                         font.family: Theme.textFont
-                        font.pixelSize: 11
+                        font.pixelSize: 10
                         font.weight: Font.Medium
                         color: Theme.subtle
                     }
                 }
             }
 
-            // Horizontal Cards Carousel
+            // Horizontal Cards Carousel (Clipped cleanly within the dock)
             ListView {
                 id: wallpaperList
                 Layout.fillWidth: true
-                Layout.preferredHeight: 180
+                Layout.preferredHeight: 128
                 orientation: ListView.Horizontal
-                spacing: 16
-                clip: false
+                spacing: 12
+                clip: true // Strictly clips items to stay inside the dock boundaries
 
                 model: pickerWindow.wallpapers
                 currentIndex: pickerWindow.currentIndex
 
                 highlightFollowsCurrentItem: true
-                preferredHighlightBegin: width / 2 - 120
-                preferredHighlightEnd: width / 2 + 120
+                preferredHighlightBegin: width / 2 - 85
+                preferredHighlightEnd: width / 2 + 85
                 highlightRangeMode: ListView.StrictlyEnforceRange
+
+                header: Item { width: Math.max(0, (wallpaperList.width - 170) / 2) }
+                footer: Item { width: Math.max(0, (wallpaperList.width - 170) / 2) }
 
                 // Mouse wheel horizontal scroll
                 WheelHandler {
@@ -229,50 +239,63 @@ PanelWindow {
 
                 delegate: Item {
                     id: cardItem
-                    width: 240
-                    height: 160
+                    width: 170
+                    height: 110
                     anchors.verticalCenter: parent.verticalCenter
 
                     property bool isCurrent: index === pickerWindow.currentIndex
                     property bool hovered: cardMouseArea.containsMouse
 
-                    scale: isCurrent ? 1.08 : (hovered ? 1.02 : 0.94)
+                    scale: isCurrent ? 1.07 : (hovered ? 1.02 : 0.94)
                     z: isCurrent ? 10 : 1
-                    opacity: isCurrent ? 1.0 : (hovered ? 0.92 : 0.60)
+                    opacity: isCurrent ? 1.0 : (hovered ? 0.90 : 0.60)
 
                     Behavior on scale {
-                        NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+                        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
                     }
                     Behavior on opacity {
-                        NumberAnimation { duration: 200 }
+                        NumberAnimation { duration: 180 }
                     }
 
-                    Rectangle {
+                    // Card Container
+                    Item {
                         anchors.fill: parent
-                        radius: 16
-                        color: Theme.surface
-                        border.color: cardItem.isCurrent ? Theme.accent : (cardItem.hovered ? Qt.rgba(255, 255, 255, 0.25) : Qt.rgba(255, 255, 255, 0.12))
-                        border.width: cardItem.isCurrent ? 2 : 1
-                        clip: true
 
-                        // Wallpaper preview image
+                        // Smooth rounded mask for true anti-aliased rounded corners
+                        Rectangle {
+                            id: cardMask
+                            anchors.fill: parent
+                            radius: 14
+                            visible: false
+                            layer.enabled: true
+                        }
+
+                        // Raw thumbnail image
                         Image {
+                            id: cardImg
                             anchors.fill: parent
                             source: modelData.thumbnail ? ("file://" + modelData.thumbnail) : ("file://" + modelData.path)
                             fillMode: Image.PreserveAspectCrop
                             asynchronous: true
                             cache: true
+                            visible: false
                         }
 
-                        // Subtle active border glow
+                        // MultiEffect mask: completely removes square edgy corners!
+                        MultiEffect {
+                            anchors.fill: parent
+                            source: cardImg
+                            maskEnabled: true
+                            maskSource: cardMask
+                        }
+
+                        // Rounded Border overlay matching the mask radius
                         Rectangle {
                             anchors.fill: parent
-                            radius: 16
+                            radius: 14
                             color: "transparent"
-                            border.color: Theme.accent
-                            border.width: 1
-                            opacity: cardItem.isCurrent ? 0.7 : 0.0
-                            Behavior on opacity { NumberAnimation { duration: 200 } }
+                            border.color: cardItem.isCurrent ? Theme.accent : (cardItem.hovered ? Qt.rgba(255, 255, 255, 0.28) : Qt.rgba(255, 255, 255, 0.12))
+                            border.width: cardItem.isCurrent ? 2 : 1
                         }
                     }
 
@@ -293,16 +316,16 @@ PanelWindow {
             RowLayout {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignHCenter
-                spacing: 12
+                spacing: 10
 
                 // Selected Wallpaper Name Badge
                 Rectangle {
                     color: Qt.rgba(255, 255, 255, 0.08)
                     radius: 999
-                    border.color: Qt.rgba(255, 255, 255, 0.12)
+                    border.color: Qt.rgba(255, 255, 255, 0.10)
                     border.width: 1
-                    implicitWidth: titleText.implicitWidth + 24
-                    implicitHeight: 28
+                    implicitWidth: titleText.implicitWidth + 20
+                    implicitHeight: 24
 
                     Text {
                         id: titleText
@@ -311,7 +334,7 @@ PanelWindow {
                               ? pickerWindow.wallpapers[pickerWindow.currentIndex].name
                               : ""
                         font.family: Theme.textFont
-                        font.pixelSize: 12
+                        font.pixelSize: 11
                         font.weight: Font.Medium
                         color: Theme.fg
                     }
@@ -321,36 +344,36 @@ PanelWindow {
 
                 // Navigation Hints
                 RowLayout {
-                    spacing: 10
+                    spacing: 8
                     Text {
                         text: "← / → Browse"
                         font.family: Theme.textFont
-                        font.pixelSize: 11
+                        font.pixelSize: 10
                         color: Theme.subtle
                     }
                     Text {
                         text: "•"
                         font.family: Theme.textFont
-                        font.pixelSize: 11
+                        font.pixelSize: 10
                         color: Qt.rgba(255, 255, 255, 0.2)
                     }
                     Text {
                         text: "Enter Apply"
                         font.family: Theme.textFont
-                        font.pixelSize: 11
+                        font.pixelSize: 10
                         font.weight: Font.Medium
                         color: Theme.accent
                     }
                     Text {
                         text: "•"
                         font.family: Theme.textFont
-                        font.pixelSize: 11
+                        font.pixelSize: 10
                         color: Qt.rgba(255, 255, 255, 0.2)
                     }
                     Text {
                         text: "Esc Cancel"
                         font.family: Theme.textFont
-                        font.pixelSize: 11
+                        font.pixelSize: 10
                         color: Theme.subtle
                     }
                 }
